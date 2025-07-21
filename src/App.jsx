@@ -44,11 +44,15 @@ import {
 } from 'lucide-react';
 
 // --- Firebase Configuration ---
-// IMPORTANT: This configuration is provided by the environment.
-// Do not change these lines.
-const firebaseConfig = typeof __firebase_config !== 'undefined' 
-    ? JSON.parse(__firebase_config) 
-    : { apiKey: "AIza...", authDomain: "...", projectId: "...", storageBucket: "...", messagingSenderId: "...", appId: "..." };
+// IMPORTANT: This configuration is loaded from Vercel's Environment Variables.
+const firebaseConfigString = import.meta.env.VITE_FIREBASE_CONFIG;
+if (!firebaseConfigString) {
+  // If the variable is missing, show a clear error on the screen.
+  const errorStyle = "font-family: sans-serif; text-align: center; padding: 2rem; background-color: #fff0f0; color: #c00;";
+  document.body.innerHTML = `<div style="${errorStyle}"><h1>Erro de Configuração</h1><p>A variável de ambiente <strong>VITE_FIREBASE_CONFIG</strong> não foi encontrada.</p><p>Verifique as configurações do projeto na Vercel.</p></div>`;
+  throw new Error("Missing VITE_FIREBASE_CONFIG environment variable.");
+}
+const firebaseConfig = JSON.parse(firebaseConfigString);
 
 const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-contract-app';
 
